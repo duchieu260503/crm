@@ -1,0 +1,301 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout">
+<body>
+<section layout:fragment="content">
+
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 mb-8">
+        <h1 class="text-2xl font-bold flex items-center gap-2 text-gray-700 mb-4 sm:mb-0">
+            <i class="fa fa-pen-to-square text-viettel-red"></i> Cập nhật hợp đồng
+        </h1>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden border-t-4 border-viettel-red">
+            <div class="px-6 py-5 bg-gray-50 border-b border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-900">Chỉnh sửa thông tin hợp đồng</h3>
+            </div>
+            <div class="p-6">
+                <form th:action="@{/contract/edit/{id}(id=${contract.id})}" th:object="${contract}" method="post"
+                      class="space-y-6" novalidate="novalidate">
+
+                    <!-- Error Display -->
+                    <div class="bg-red-100 text-red-700 p-3 rounded-md" th:if="${#fields.hasErrors('*')}">
+                        <ul>
+                            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                        </ul>
+                    </div>
+
+                    <!-- Contract Type -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Loại hợp đồng:</label>
+                        <select th:field="*{type}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-viettel-red"
+                                onchange="toggleContractSections()">
+                            <option value="" disabled="disabled" th:selected="${contract.type == null}">-- Chọn loại --
+                            </option>
+                            <option value="IN_PROGRESS">Đang triển khai</option>
+                            <option value="DONE_DEAL">Đã ký</option>
+                        </select>
+                    </div>
+
+                    <!-- Shared Fields -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Đầu mối AM: </label>
+                        <input type="text" th:field="*{amLead}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Loại hợp đồng: </label>
+                        <input type="text" th:field="*{category}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Phòng ban chủ trì: </label>
+                        <input type="text" th:field="*{unitInCharge}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Sản phẩm: </label>
+                        <input type="text" th:field="*{product}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Đơn vị VCX: </label>
+                        <input type="text" th:field="*{vcxImplementingUnit}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                    </div>
+
+                    <!-- IN_PROGRESS Only -->
+                    <div id="inProgressSection" class="hidden border-t pt-4 space-y-6">
+                        <h4 class="font-semibold text-gray-800 mb-3">Thông tin hợp đồng đang xúc tiến</h4>
+
+                        <!-- General Progress -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Tiến độ tổng thể (%):</label>
+
+                            <!-- Visible input for number -->
+                            <input type="number"
+                                   id="generalProgressInput"
+                                   min="0" max="100" step="1"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-viettel-red"
+                                   required="required" />
+
+                            <!-- Hidden input bound to the model -->
+                            <input type="hidden" th:field="*{generalProgress}" id="generalProgress" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Doanh thu dự kiến /
+                                tháng:</label>
+                            <input type="number" th:field="*{expectedRevenuePerMonth}"
+                                   id="expectedRevenuePerMonth"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">SL seats dự kiến /
+                                tháng:</label>
+                            <input type="number" th:field="*{expectedSeatsPerMonth}"
+                                   id="expectedSeatsPerMonth"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Tổng doanh thu dự
+                                kiến:</label>
+                            <input readonly="readonly" th:field="*{expectedValue}"
+                                   id="expectedValue"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red bg-gray-100"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Ngày triển khai dự
+                                kiến:</label>
+                            <input type="date" th:field="*{expectedLaunch}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Trạng thái: </label>
+                            <select th:field="*{status}"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-viettel-red"
+                                    required="required">
+                                <option value="Chưa ký">Chưa ký</option>
+                                <option value="Đang ký">Đang ký</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Kế hoạch tiếp theo: </label>
+                            <textarea th:field="*{nextPlan}"
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Khó khăn:</label>
+                            <textarea th:field="*{difficulties}"
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- DONE_DEAL Only -->
+                    <div id="doneDealSection" class="hidden border-t pt-4 space-y-6">
+                        <h4 class="font-semibold text-gray-800 mb-3">Thông tin hợp đồng đã ký</h4>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Mã hợp đồng:</label>
+                            <input type="text" th:field="*{contractCode}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">PAKD:</label>
+                            <input type="text" th:field="*{pakdCode}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Nội dung PAKD:</label>
+                            <input type="text" th:field="*{pakdContent}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Ngày ký:</label>
+                            <input type="date" th:field="*{signedDate}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Ngày bắt đầu:</label>
+                            <input type="date" th:field="*{startDate}" id="startDate"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"
+                                   oninput="calculateContractEndDate()"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Thời hạn hợp đồng
+                                (tháng):</label>
+                            <input type="number" th:field="*{durationInMonths}" id="durationInMonths"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"
+                                   oninput="calculateContractEndDate()"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Ngày kết thúc:</label>
+                            <input type="date" th:field="*{endDate}" id="endDate" readonly="readonly"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red bg-gray-100"/>
+                        </div>
+
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Khách hàng cuối sử dụng dịch
+                                vụ:</label>
+                            <input type="text" th:field="*{lastClient}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Giá trị không VAT:</label>
+                            <input type="number" th:field="*{contractValueNoVat}"
+                                   id="contractValueNoVat"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"
+                                   oninput="calculateVatAndTotal()"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">VAT:</label>
+                            <input type="number" th:field="*{vat}"
+                                   id="vat" readonly="readonly"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red bg-gray-100"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Tổng giá trị hợp đồng:</label>
+                            <input type="number" th:field="*{totalValue}"
+                                   id="totalValue" readonly="readonly"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red bg-gray-100"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Trạng thái doanh thu:</label>
+                            <select th:field="*{revenueStatus}"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-viettel-red">
+                                <option value="Chưa thu">Chưa thu</option>
+                                <option value="Đang thu">Đang thu</option>
+                                <option value="Thu đủ">Thu đủ</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Kênh bán:</label>
+                            <input type="text" th:field="*{sellingChannel}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Nền tảng cung cấp dịch
+                                vụ:</label>
+                            <input type="text" th:field="*{servicePlatform}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"/>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tiến độ chi tiết:</label>
+                        <textarea th:field="*{detailedProgress}"
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-viettel-red"></textarea>
+                    </div>
+
+                    <!-- Replace only the submit button text -->
+                    <div class="flex justify-end pt-4">
+                        <button type="submit"
+                                class="bg-viettel-red hover:bg-viettel-red-dark text-white font-bold py-2 px-6 rounded-md transition duration-200">
+                            Cập nhật
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reuse the same JS for section toggling and calculation logic -->
+    <script>
+        function toggleContractSections() {
+            const contractType = document.querySelector('[name="type"]').value;
+
+            const inProgressSection = document.getElementById("inProgressSection");
+            const doneDealSection = document.getElementById("doneDealSection");
+
+            if (contractType === "IN_PROGRESS") {
+                inProgressSection.classList.remove("hidden");
+                doneDealSection.classList.add("hidden");
+                inProgressSection.querySelectorAll("input, select, textarea").forEach(el => el.disabled = false);
+                doneDealSection.querySelectorAll("input, select, textarea").forEach(el => el.disabled = true);
+            } else if (contractType === "DONE_DEAL") {
+                doneDealSection.classList.remove("hidden");
+                inProgressSection.classList.add("hidden");
+                doneDealSection.querySelectorAll("input, select, textarea").forEach(el => el.disabled = false);
+                inProgressSection.querySelectorAll("input, select, textarea").forEach(el => el.disabled = true);
+            } else {
+                inProgressSection.classList.add("hidden");
+                doneDealSection.classList.add("hidden");
+                inProgressSection.querySelectorAll("input, select, textarea").forEach(el => el.disabled = true);
+                doneDealSection.querySelectorAll("input, select, textarea").forEach(el => el.disabled = true);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            toggleContractSections();
+        });
+    </script>
+</section>
+</body>
+</html>

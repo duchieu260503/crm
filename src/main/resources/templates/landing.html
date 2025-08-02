@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chào mừng | Hệ thống Quản lý Khách hàng</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Open Sans (supports Vietnamese) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* Custom styles for Open Sans font */
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        /* Custom Tailwind colors for Viettel theme */
+        .bg-viettel-red {
+            background-color: #ea0028; /* Viettel Red */
+        }
+
+        .hover\:bg-viettel-red-dark:hover {
+            background-color: #D62621; /* Slightly darker red for hover */
+        }
+
+        .text-viettel-red {
+            color: #ea0028;
+        }
+
+        .hover\:text-viettel-red-dark:hover {
+            color: #D62621;
+        }
+
+        .border-viettel-red {
+            border-color: #ea0028;
+        }
+
+        .ring-viettel-light-red {
+            --tw-ring-color: #F8D7DA; /* Lighter red for ring */
+        }
+
+        .bg-custom-light-gray {
+            background-color: white; /* Custom light gray for header */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center bg-gray-50">
+
+<header class="w-full bg-custom-light-gray py-16 px-4 text-center shadow-lg relative">
+    <!-- Login Button in Header -->
+    <div class="absolute top-4 right-4">
+        <button id="showLoginModalBtn"
+                class="inline-flex items-center py-4 px-10 border border-white rounded-full shadow-lg text-xl text-white font-bold bg-viettel-red text-viettel-white hover:bg-gray-100 hover:text-viettel-red-dark focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-white transition-all duration-150">
+            <i class="fas fa-sign-in-alt mr-2"></i> Đăng nhập
+        </button>
+    </div>
+
+    <!-- Company Logo -->
+    <img src="/images/viettel-cx-logo.png" alt="Company Logo"
+         class="mx-auto object-contain mb-6 ring-viettel-red ring-opacity-75" />
+    <h1 class="text-5xl font-extrabold mb-4 leading-tight drop-shadow text-viettel-red">
+        Hệ thống Quản lý Khách hàng
+    </h1>
+    <p class="text-xl opacity-90 max-w-3xl mx-auto text-viettel-red">
+        Nền tảng toàn diện giúp bạn quản lý, tương tác và phát triển mối quan hệ với khách hàng một cách hiệu quả.
+    </p>
+</header>
+
+<main class="w-full max-w-7xl flex flex-col gap-16 py-16">
+
+    <!-- Features Section -->
+    <section class="text-center px-4">
+        <h2 class="text-4xl font-bold text-gray-800 mb-10">Các tính năng nổi bật</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Feature 1 Card -->
+            <div
+                    class="bg-white p-8 rounded-lg shadow-md border-t-4 border-viettel-red flex flex-col items-center text-center">
+                <div class="text-viettel-red text-5xl mb-4">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">Quản lý Khách hàng</h3>
+                <p class="text-gray-600">
+                    Tổ chức thông tin khách hàng chi tiết, theo dõi lịch sử tương tác và phân loại dễ dàng.
+                </p>
+            </div>
+
+            <!-- Feature 2 Card -->
+            <div
+                    class="bg-white p-8 rounded-lg shadow-md border-t-4 border-viettel-red flex flex-col items-center text-center">
+                <div class="text-viettel-red text-5xl mb-4">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">Phân tích &amp; Báo cáo</h3>
+                <p class="text-gray-600">
+                    Cung cấp cái nhìn sâu sắc về dữ liệu khách hàng với các báo cáo và phân tích trực quan.
+                </p>
+            </div>
+
+            <!-- Feature 3 Card -->
+            <div
+                    class="bg-white p-8 rounded-lg shadow-md border-t-4 border-viettel-red flex flex-col items-center text-center">
+                <div class="text-viettel-red text-5xl mb-4">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">Tăng cường Tương tác</h3>
+                <p class="text-gray-600">
+                    Nâng cao trải nghiệm khách hàng với các công cụ tương tác và chiến dịch cá nhân hóa.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="bg-white p-12 rounded-lg shadow-xl border-l-8 border-viettel-red max-w-6xl mx-auto">
+        <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">Tại sao chọn chúng tôi?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 text-viettel-red text-3xl mt-1">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Dễ dàng sử dụng</h3>
+                    <p class="text-gray-600">Giao diện trực quan, dễ học và triển khai, giúp đội ngũ của bạn nhanh
+                        chóng làm quen.</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 text-viettel-red text-3xl mt-1">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Bảo mật vượt trội</h3>
+                    <p class="text-gray-600">Bảo vệ dữ liệu khách hàng của bạn với các tiêu chuẩn bảo mật hàng đầu.
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 text-viettel-red text-3xl mt-1">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Hỗ trợ 24/7</h3>
+                    <p class="text-gray-600">Đội ngũ hỗ trợ luôn sẵn sàng giải đáp mọi thắc mắc của bạn bất cứ lúc
+                        nào.</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 text-viettel-red text-3xl mt-1">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Tăng trưởng bền vững</h3>
+                    <p class="text-gray-600">Công cụ giúp bạn xây dựng mối quan hệ lâu dài và thúc đẩy doanh số.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="text-center bg-gray-50 py-12 px-4 rounded-lg shadow-inner">
+        <h2 class="text-4xl font-bold text-gray-800 mb-10">Cách thức hoạt động</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Step 1 -->
+            <div
+                    class="bg-white p-8 rounded-lg shadow-md flex flex-col items-center text-center border-t-4 border-viettel-red">
+                <div
+                        class="w-16 h-16 bg-viettel-red text-white text-3xl rounded-full flex items-center justify-center mb-4 font-bold shadow-md">
+                    1</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">Đăng ký &amp; Thiết lập</h3>
+                <p class="text-gray-600">Tạo tài khoản của bạn và cấu hình hệ thống phù hợp với doanh nghiệp.</p>
+            </div>
+            <!-- Step 2 -->
+            <div
+                    class="bg-white p-8 rounded-lg shadow-md flex flex-col items-center text-center border-t-4 border-viettel-red">
+                <div
+                        class="w-16 h-16 bg-viettel-red text-white text-3xl rounded-full flex items-center justify-center mb-4 font-bold shadow-md">
+                    2</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">Nhập dữ liệu khách hàng</h3>
+                <p class="text-gray-600">Dễ dàng nhập thông tin khách hàng hiện có hoặc thêm mới.</p>
+            </div>
+            <!-- Step 3 -->
+            <div
+                    class="bg-white p-8 rounded-lg shadow-md flex flex-col items-center text-center border-t-4 border-viettel-red">
+                <div
+                        class="w-16 h-16 bg-viettel-red text-white text-3xl rounded-full flex items-center justify-center mb-4 font-bold shadow-md">
+                    3</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">Bắt đầu quản lý</h3>
+                <p class="text-gray-600">Sử dụng các tính năng để theo dõi, phân tích và tương tác hiệu quả.</p>
+            </div>
+        </div>
+    </section>
+
+
+</main>
+
+<footer class="text-center text-gray-600 text-sm opacity-80 mt-auto pt-8 pb-4 w-full bg-white shadow-inner">
+    &#169; 2024 Hệ thống Quản lý Khách hàng. Bảo lưu mọi quyền.
+</footer>
+
+<!-- Login Modal -->
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-auto overflow-hidden relative">
+        <!-- Close Button -->
+        <button id="closeLoginModalBtn" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl focus:outline-none">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <!-- Top red bar with rounded corners -->
+        <div class="h-4 rounded-t-lg"></div>
+
+        <div class="p-8">
+            <div class="text-center mb-8">
+                <!-- Company Logo with a subtle ring -->
+                <img src="./images/viettel-cx-logo.png" alt="Company Logo"
+                     class="mx-auto h-24 w-60 object-contain mb-4" />
+                <h2 class="text-3xl font-bold text-gray-900 mb-2 leading-tight">Chào mừng trở lại!</h2>
+                <p class="text-gray-600 text-lg">Đăng nhập vào tài khoản của bạn.</p>
+            </div>
+
+            <!-- Login Status Message -->
+            <div id="loginMessage" class="hidden p-3 mb-4 rounded-lg text-sm text-center font-medium"></div>
+
+            <form method="post" action="/login" id="loginForm" class="space-y-6">
+                <div>
+                    <label for="username" class="block text-sm font-semibold text-gray-700 mb-1">Tên đăng nhập</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input type="text" id="username" name="username" placeholder="Nhập tên đăng nhập của bạn"
+                               class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-viettel-red focus:border-viettel-red sm:text-base"
+                               required="required" />
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">Mật khẩu</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input type="password" id="password" name="password" placeholder="Nhập mật khẩu của bạn"
+                               class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-viettel-red focus:border-viettel-red sm:text-base"
+                               required="required" />
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                </div>
+
+                <div>
+                    <button type="submit"
+                            class="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-md shadow-md text-lg font-semibold text-white bg-viettel-red hover:bg-viettel-red-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-viettel-red transition-colors duration-200">
+                        <i class="fas fa-sign-in-alt mr-3"></i> Đăng nhập
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/js/login.js"></script>
+<script defer="defer" th:inline="javascript">
+    /*<![CDATA[*/
+    const loginError = /*[[${loginError}]]*/ false;
+    if (loginError) {
+        const modal = document.getElementById('loginModal');
+        modal.classList.remove('hidden');
+
+        const msg = document.getElementById('loginMessage');
+        msg.textContent = 'Tên đăng nhập hoặc mật khẩu không đúng.';
+        msg.classList.remove('hidden');
+        msg.classList.add('bg-red-100', 'text-red-700', 'border', 'border-red-300');
+    }
+    /*]]>*/
+</script>
+
+</body>
+</html>

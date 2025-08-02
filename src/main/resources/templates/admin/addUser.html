@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+</head>
+<body>
+<section layout:fragment="content">
+
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 mb-8">
+        <h1 class="text-2xl font-bold flex items-center gap-2 text-gray-700 mb-4 sm:mb-0">
+            <i class="fa fa-user-plus text-viettel-red"></i> Thêm mới user
+        </h1>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden border-t-4 border-viettel-red">
+            <div class="px-6 py-5 bg-gray-50 border-b border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-900">Thông tin user mới</h3>
+            </div>
+            <div class="p-6">
+                <form th:action="@{addUser}" th:object="${user}" method="post" class="space-y-6">
+                    <!-- Error Message Block -->
+                    <div class="bg-red-100 text-red-700 p-3 rounded-md" th:if="${#fields.hasErrors('*')}">
+                        <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+                    </div>
+                    <div th:if="${#fields.hasErrors('email')}" class="bg-red-100 text-red-700 p-3 rounded-md">
+                        <p th:errors="*{email}"></p>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email:</label>
+                        <input id="email"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-viettel-red focus:border-viettel-red"
+                               type="text" th:field="*{email}"/>
+                    </div>
+
+                    <!-- Password with toggle -->
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">Mật khẩu:</label>
+
+                        <div class="relative">
+                            <input id="password"
+                                   th:field="*{password}"
+                                   type="password"
+                                   class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-viettel-red focus:border-viettel-red" />
+
+                            <button type="button" id="togglePassword"
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                                    aria-label="Hiện/mật mật khẩu">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <!-- Firstname & Lastname -->
+                    <div>
+                        <label for="firstname" class="block text-sm font-semibold text-gray-700 mb-1">Tên:</label>
+                        <input id="firstname"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-viettel-red focus:border-viettel-red"
+                               type="text" th:field="*{firstname}"/>
+                    </div>
+                    <div>
+                        <label for="lastname" class="block text-sm font-semibold text-gray-700 mb-1">Họ:</label>
+                        <input id="lastname"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-viettel-red focus:border-viettel-red"
+                               type="text" th:field="*{lastname}"/>
+                    </div>
+
+                    <!-- Phone -->
+                    <div>
+                        <label for="phone" class="block text-sm font-semibold text-gray-700 mb-1">Số điện thoại:</label>
+                        <input id="phone"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-viettel-red focus:border-viettel-red"
+                               type="text" th:field="*{phone}"/>
+                    </div>
+
+                    <!-- Dropdowns for Supervisor, Roles, Office Address -->
+                    <div>
+                        <label for="supervisor" class="block text-sm font-semibold text-gray-700 mb-1">Người quản
+                            lý:</label>
+                        <select id="supervisor"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-viettel-red focus:border-viettel-red"
+                                th:field="*{supervisor}">
+                            <!-- Mock data for preview -->
+                            <option th:each="el : ${allUsers}" th:value="${el.id}" th:text="${el.name}"></option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="role" class="block text-sm font-semibold text-gray-700 mb-1">Quyền truy cập:</label>
+                        <select id="role"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-viettel-red focus:border-viettel-red"
+                                th:field="*{role}">
+                            <option th:each="el : ${allRoles}" th:value="${el.id}" th:text="${el.name}"></option>
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label for="office" class="block text-sm font-semibold text-gray-700 mb-1">Địa chỉ văn
+                            phòng:</label>
+                        <select id="office"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-viettel-red focus:border-viettel-red"
+                                th:field="*{address}">
+                            <!-- Mock data for preview -->
+                            <option th:each="el : ${allAddresses}" th:value="${el.id}"
+                                    th:text="${el.city}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-end pt-4">
+                        <input class="bg-viettel-red hover:bg-viettel-red-dark text-white font-bold py-2 px-6 rounded-md cursor-pointer transition-colors duration-200 shadow-md"
+                               type="submit" value="Tạo mới"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

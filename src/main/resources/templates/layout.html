@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Hệ thống Quản lý Khách hàng</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Open Sans (supports Vietnamese) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&amp;display=swap"
+          rel="stylesheet"/>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png"/>
+    <!--        <link rel="stylesheet" type="text/css" href="/css/main.css" />-->
+    <link rel="stylesheet" type="text/css" href="/css/table.css"/>
+    <style>
+        /* Custom styles for Open Sans font */
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        /* Viettel Brand Colors */
+        .text-viettel-red {
+            color: #ea0028; /* Primary Viettel Red */
+        }
+
+        .bg-viettel-red {
+            background-color: #ea0028; /* Primary Viettel Red */
+        }
+
+        .hover\:bg-viettel-red-dark:hover {
+            background-color: #D62621; /* Darker red for hover */
+        }
+
+        .hover\:bg-viettel-red:hover {
+            background-color: #ea0028;
+        }
+
+        .focus\:ring-viettel-red {
+            --tw-ring-color: #ea0028; /* Focus ring color */
+        }
+
+        .border-viettel-red {
+            border-color: #ea0028; /* Border color */
+        }
+
+        /* Active Navigation Link Style */
+        .active-nav-link {
+            /* background-color: #ea0028; Viettel Red background */
+            color: white !important; /* White text, !important to override hover */
+            /* font-weight: 600; Semi-bold */
+        }
+
+        .active-div-link {
+            background-color: #ea0028 !important; /* Darker red on hover for active state */
+        }
+
+    </style>
+</head>
+<body class="app sidebar-mini bg-gray-100 font-sans">
+<header class="bg-white shadow">
+    <div class="flex items-center">
+        <!-- Logo container matches sidebar width -->
+        <div class="w-64 flex items-center justify-center px-4 py-4">
+            <a th:href="@{/}" target="_blank" class="flex items-center space-x-2">
+                <!-- Viettel CX Logo -->
+                <img src="/images/viettel-cx-logo.png" alt="VCX"
+                     class="h-12 w-auto object-contain rounded"/>
+            </a>
+        </div>
+        <!-- Right side: search and icons -->
+        <div class="flex-1 flex justify-end items-center px-6 space-x-4">
+            <!-- User Profile and Dropdown -->
+            <div class="relative inline-block text-left">
+                <!-- Combined Trigger Button for User Info -->
+                <button id="userDropdownButton" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors duration-200 border border-gray-300">
+                    <i class="fas fa-user text-gray-600 text-lg"></i>
+                    <!--/*@thymesVar id="currentUser" type="pl.coderslab.entity.User"*/-->
+                    <div class="flex flex-col text-left" th:if="${currentUser != null}">
+                        <span class="text-sm font-semibold text-gray-800" th:text="${currentUser.name}">Tên người dùng</span>
+                        <span class="text-xs text-gray-500" th:text="${currentUser.role.name.replace('ROLE_', '')}">Vai trò</span>
+                    </div>
+                    <i class="fas fa-chevron-down text-gray-400 text-xs ml-1"></i>
+                </button>
+                <!-- Dropdown Menu -->
+                <ul id="userDropdown"
+                    class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg hidden group-hover:block z-50 origin-top-right">
+                    <li>
+                        <a href="/api/auth/change-password-form"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fa fa-key mr-2"></i> Đổi mật khẩu
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="logoutButton"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fa fa-sign-out mr-2"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="flex min-h-screen m-4">
+    <aside class="w-64 bg-white shadow-lg rounded-r-lg rounded-l-lg">
+        <nav class="p-4 space-y-2">
+            <!-- Always visible -->
+            <div class="group p-3 rounded-md hover:bg-viettel-red transition-all duration-200 cursor-pointer load-page-link"
+                 data-page="/home"
+                 onclick="window.location.href='/home'">
+                <span class="block text-gray-800 font-medium group-hover:text-white">Trang chủ</span>
+            </div>
+
+            <!-- EMPLOYEE ONLY -->
+            <div th:if="${#authorization.expression('hasRole(''ROLE_EMPLOYEE'')')}"
+                 class="group p-3 rounded-md hover:bg-viettel-red transition-all duration-200 cursor-pointer load-page-link"
+                 data-page="/employeeSearch"
+                 onclick="window.location.href='/employeeSearch'">
+                <span class="block text-gray-800 font-medium group-hover:text-white">Tìm kiếm khách hàng</span>
+            </div>
+
+            <!-- ADMIN ONLY -->
+            <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+                 class="group p-3 rounded-md hover:bg-viettel-red transition-all duration-200 cursor-pointer load-page-link"
+                 data-page="/managerSearch"
+                 onclick="window.location.href='/managerSearch'">
+                <span class="block text-gray-800 font-medium group-hover:text-white">Tìm kiếm khách hàng</span>
+            </div>
+
+            <!-- SHARED ALL ROLES -->
+            <div class="group p-3 rounded-md hover:bg-viettel-red transition-all duration-200 cursor-pointer load-page-link"
+                 data-page="/client/add"
+                 onclick="window.location.href='/client/add'">
+                <span class="block text-gray-800 font-medium group-hover:text-white">Thêm mới khách hàng</span>
+            </div>
+
+            <!-- ADMIN ONLY -->
+            <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+                 class="group p-3 rounded-md hover:bg-viettel-red transition-all duration-200 cursor-pointer load-page-link"
+                 data-page="/admin/addUser"
+                 onclick="window.location.href='/admin/addUser'">
+                <span class="block text-gray-800 font-medium group-hover:text-white">Thêm mới User</span>
+            </div>
+
+            <!-- CONTRACT SEARCH: EMPLOYEE -->
+            <div th:if="${#authorization.expression('hasRole(''ROLE_EMPLOYEE'')')}"
+                 class="group p-3 rounded-md hover:bg-viettel-red transition-all duration-200 cursor-pointer load-page-link"
+                 data-page="/contract"
+                 onclick="window.location.href='/contract'">
+                <span class="block text-gray-800 font-medium group-hover:text-white">Tìm kiếm hợp đồng</span>
+            </div>
+
+            <!-- CONTRACT SEARCH: ADMIN -->
+            <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+                 class="group p-3 rounded-md hover:bg-viettel-red transition-all duration-200 cursor-pointer load-page-link"
+                 data-page="/contract"
+                 onclick="window.location.href='/contract'">
+                <span class="block text-gray-800 font-medium group-hover:text-white">Tìm kiếm hợp đồng</span>
+            </div>
+        </nav>
+    </aside>
+
+
+    <main class="flex-1 p-6 overflow-x-auto" layout:fragment="content">
+        <!-- This is where the content from other files will be loaded -->
+        <div id="content-area" class="space-y-8">
+            <!-- Content will be injected here by JavaScript -->
+            <div class="flex justify-center items-center h-full">
+                <div class="text-gray-500">Loading content...</div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div id="logoutConfirmationModal"
+     class="fixed inset-0 hidden items-center justify-center z-50 bg-black bg-opacity-50 p-4">
+    <div class="bg-white p-6 rounded-lg shadow-xl text-center w-full max-w-sm">
+        <p class="mb-6 text-lg text-gray-800">Bạn có chắc chắn muốn đăng xuất không?</p>
+        <div class="flex justify-center space-x-4">
+            <button id="confirmLogout"
+                    class="bg-viettel-red hover:bg-viettel-red-dark text-white font-bold px-6 py-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-viettel-red focus:ring-opacity-50">
+                Có
+            </button>
+            <button id="cancelLogout"
+                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold px-6 py-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                Không
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Essential javascripts for application to work-->
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- The javascript plugin to display page loading on top-->
+<script src="/js/plugins/pace.min.js"></script>
+<!-- Data table plugin-->
+<script type="text/javascript" src="/js/plugins/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/js/plugins/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript">
+    $('#sampleTable').DataTable();
+    $('#sampleTable1').DataTable();
+    $('#tableDoneDeal').DataTable();
+    $('#tableInProgress').DataTable();
+</script>
+
+<!-- Page specific javascripts-->
+<script type="text/javascript" src="/js/plugins/chart.js"></script>
+<script src="/js/change_password.js"></script>
+<script src="/js/role_click.js"></script>
+<script src="/js/layout.js" defer="defer"></script>
+<script src="/js/table.js" defer="defer"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleOldPassword = document.getElementById('toggleOldPassword');
+        const oldPasswordField = document.getElementById('oldPassword');
+
+        toggleOldPassword.addEventListener('click', function () {
+            const type = oldPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            oldPasswordField.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        const toggleNewPassword = document.getElementById('toggleNewPassword');
+        const newPasswordField = document.getElementById('newPassword');
+
+        toggleNewPassword.addEventListener('click', function () {
+            const type = newPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            newPasswordField.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+        const confirmPasswordField = document.getElementById('confirmPassword');
+
+        toggleConfirmPassword.addEventListener('click', function () {
+            const type = confirmPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordField.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    });
+</script>
+
+<!--    Java Script to confirm logout-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const logoutButton = document.getElementById('logoutButton');
+        const modal = document.getElementById('logoutConfirmationModal');
+        const confirmLogoutButton = document.getElementById('confirmLogout');
+        const cancelLogoutButton = document.getElementById('cancelLogout');
+
+        if (logoutButton || modal || confirmLogoutButton || cancelLogoutButton) {
+
+            logoutButton.addEventListener('click', function (event) {
+                event.preventDefault(); // Ngăn chặn hành động đăng xuất ngay lập tức (nếu có href)
+                modal.style.display = "flex"; // Hiển thị modal
+            });
+
+            confirmLogoutButton.addEventListener('click', function () {
+                window.location.href = '/logout'; // Thực hiện đăng xuất
+            });
+
+            cancelLogoutButton.addEventListener('click', function () {
+                modal.style.display = "none"; // Ẩn modal
+            });
+
+            // Đóng modal khi nhấp ra ngoài
+            window.addEventListener('click', function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            });
+        }
+    });
+</script>
+
+<!--    Java Script to export excel-->
+<script>
+    document.getElementById('exportExcelButton').addEventListener('click', function () {
+        const table = document.getElementById('sampleTable'); // ID của bảng hiển thị dữ liệu
+        const filenameInput = document.getElementById('excelFilename'); // ID của input tên file (nếu có)
+        const desiredFilename = filenameInput ? filenameInput.value.trim() || 'exported_data' : 'exported_data';
+        const wb = XLSX.utils.book_new();
+        const ws_data = [];
+
+        // Lấy header từ bảng
+        const headerRow = table.querySelector('thead tr');
+        if (headerRow) {
+            const headers = Array.from(headerRow.querySelectorAll('th')).map(th => th.textContent);
+            ws_data.push(headers);
+        }
+
+        // Lấy dữ liệu từ các hàng trong bảng
+        const dataRows = table.querySelector('tbody').querySelectorAll('tr');
+        dataRows.forEach(row => {
+            const rowData = Array.from(row.querySelectorAll('td')).map(td => td.textContent);
+            ws_data.push(rowData);
+        });
+
+        // Tạo worksheet từ dữ liệu
+        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+        // Thêm worksheet vào workbook
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+        // Tạo file Excel và trigger download
+        const wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'array'});
+        const blob = new Blob([new Uint8Array(wbout)], {type: 'application/octet-stream'});
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = desiredFilename + '.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    });
+</script>
+
+<script>
+    document.getElementById('exportExcelButton1').addEventListener('click', function () {
+        const wb = XLSX.utils.book_new(); // Create new workbook
+
+        // Export In Progress Contracts Table
+        const table1 = document.getElementById('tableInProgress');
+        const data1 = extractTableData(table1);
+        const ws1 = XLSX.utils.aoa_to_sheet(data1);
+        XLSX.utils.book_append_sheet(wb, ws1, 'In Progress');
+
+        // Export Done Deal Contracts Table
+        const table2 = document.getElementById('tableDoneDeal');
+        const data2 = extractTableData(table2);
+        const ws2 = XLSX.utils.aoa_to_sheet(data2);
+        XLSX.utils.book_append_sheet(wb, ws2, 'Done Deal');
+
+        // Save File
+        const wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'array'});
+        const blob = new Blob([new Uint8Array(wbout)], {type: 'application/octet-stream'});
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'contract_search_result.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    });
+
+    // Helper function to extract headers + rows
+    function extractTableData(table) {
+        const ws_data = [];
+
+        const headerRow = table.querySelector('thead tr');
+        if (headerRow) {
+            const headers = Array.from(headerRow.querySelectorAll('th')).map(th => th.textContent.trim());
+            ws_data.push(headers);
+        }
+
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const rowData = Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim());
+            ws_data.push(rowData);
+        });
+
+        return ws_data;
+    }
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script th:inline="javascript" defer="defer">
+    /*<![CDATA[*/
+    window.addEventListener('load', function () {
+        const tables = document.querySelectorAll('#sampleTable, #sampleTable1, #tableDoneDeal, #tableInProgress');
+        console.log(tables)
+        tables.forEach(function (table) {
+            const wrapper = table.parentElement;
+            // console.log(wrapper)
+            if (wrapper) {
+                wrapper.classList.add('overflow-x-auto');
+            }
+        });
+
+        const paginates = document.querySelectorAll('.dataTables_paginate');
+        paginates.forEach(function (paginate){
+           paginate.classList.add('pt-4');
+        });
+    });
+    /*]]>*/
+</script>
+
+<script defer="defer">
+    //<![CDATA[
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleButton = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+        // const icon = toggleButton.children[0];
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+
+            // Update icon classes
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    });
+    //]]>
+</script>
+</body>
+
+</html>

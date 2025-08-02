@@ -1,0 +1,497 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <style>
+        /* Viettel Brand Colors (assuming these are globally defined, but included here for completeness) */
+        .text-viettel-red {
+            color: #ea0028;
+        }
+
+        .bg-viettel-red {
+            background-color: #ea0028;
+        }
+
+        .hover\:bg-viettel-red-dark:hover {
+            background-color: #D62621;
+        }
+
+        .focus\:ring-viettel-red {
+            --tw-ring-color: #ea0028;
+        }
+
+        .border-viettel-red {
+            border-color: #ea0028;
+        }
+
+        /* --- Tab specific styles --- */
+        .tab-button {
+            @apply px-5 py-2.5 text-sm font-medium border-b-2 border-transparent text-gray-700 hover:text-viettel-red hover:border-viettel-red transition-all duration-200 cursor-pointer;
+            white-space: nowrap; /* Prevent tab titles from wrapping */
+        }
+
+        .tab-button.active {
+            @apply text-viettel-red border-viettel-red bg-white -mb-px;
+            /* -mb-px to overlap the border below */
+            box-shadow: 0 -2px 0px 0px #ea0028 inset; /* Small red line on top for active */
+        }
+
+        .tab-pane {
+            @apply hidden pt-4;
+            /* Hidden by default, with padding-top */
+        }
+
+        .tab-pane.active {
+            @apply block;
+        }
+    </style>
+</head>
+
+<body>
+<section layout:fragment="content">
+
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4">
+        <h1 class="text-2xl font-bold flex items-center gap-2 text-gray-700 mb-4 sm:mb-0">
+            <i class="fa fa-th-list text-viettel-red"></i> Tìm kiếm hợp đồng (Admin)
+        </h1>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6 mt-8">
+        <h4 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Tùy chọn tìm kiếm</h4>
+
+        <!-- Tab Navigation -->
+        <div class="flex space-x-4 border-b border-gray-200 mb-6">
+            <button type="button"
+                    class="tab-button px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-viettel-red hover:border-viettel-red focus:outline-none active"
+                    data-tab="tab-default">Tất cả hợp đồng
+            </button>
+            <button type="button"
+                    class="tab-button px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-viettel-red hover:border-viettel-red focus:outline-none"
+                    data-tab="tab-status">Theo trạng thái
+            </button>
+            <button type="button"
+                    class="tab-button px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-viettel-red hover:border-viettel-red focus:outline-none"
+                    data-tab="tab-name">Theo tên KH
+            </button>
+            <button type="button"
+                    class="tab-button px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-viettel-red hover:border-viettel-red focus:outline-none"
+                    data-tab="tab-date">Theo ngày tiếp xúc KH
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="tab-default" class="tab-pane active flex flex-col sm:flex-row justify-center items-stretch mt-4">
+            <!-- Search Option: Team -->
+            <div class="flex-1 flex flex-col items-center text-center border-b sm:border-b-0 sm:border-r border-gray-300 pb-4 sm:pb-0 sm:pr-6">
+                <p class="text-gray-700 mb-2 font-medium">Tìm kiếm khách hàng của team</p>
+                <a th:href="@{/contract/team}">
+                    <button class="bg-viettel-red hover:bg-viettel-red-dark text-white font-semibold px-5 py-2 rounded-md transition-all duration-200 focus:ring-2 focus:ring-viettel-red focus:ring-opacity-50">
+                        Tìm kiếm
+                    </button>
+                </a>
+            </div>
+
+            <!-- Search Option: All -->
+            <div class="flex-1 flex flex-col items-center text-center pt-4 sm:pt-0 sm:pl-6">
+                <p class="text-gray-700 mb-2 font-medium">Tìm kiếm tất cả khách hàng</p>
+                <a th:href="@{/contract/all}">
+                    <button class="bg-viettel-red hover:bg-viettel-red-dark text-white font-semibold px-5 py-2 rounded-md transition-all duration-200 focus:ring-2 focus:ring-viettel-red focus:ring-opacity-50">
+                        Tìm kiếm
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <div id="tab-status" name="activeTab" class="tab-pane hidden">
+            <form th:action="@{/contract/status}" method="get" class="space-y-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Tìm theo trạng thái hợp đồng</label>
+                <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                    <select name="selectedStatus"
+                            class="form-control border border-gray-300 rounded-md px-3 py-2 w-full sm:w-1/2">
+                        <option th:each="el : ${statusList}" th:value="${el}" th:text="${el}"
+                                th:selected="${selectedStatus != null and selectedStatus == el}"></option>
+                    </select>
+                    <button type="submit"
+                            class="bg-viettel-red hover:bg-viettel-red-dark text-white font-bold px-6 py-2 rounded-md">
+                        Tìm kiếm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tab: Date -->
+        <div id="tab-date" class="tab-pane hidden">
+            <form th:action="@{/contract/date}" method="get" class="space-y-4">
+                <input type="hidden" name="activeTab" th:value="'tab-date'"/>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">
+                    Tìm kiếm theo ngày tiếp xúc KH
+                </label>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label for="startDate" class="text-sm text-gray-600">Từ ngày</label>
+                        <input id="startDate" name="startDate" type="date"
+                               th:value="${startDate}"
+                               class="form-control border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-viettel-red focus:border-viettel-red transition-colors duration-200"/>
+                    </div>
+                    <div>
+                        <label for="endDate" class="text-sm text-gray-600">Đến ngày</label>
+                        <input id="endDate" name="endDate" type="date"
+                               th:value="${endDate}"
+                               class="form-control border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-viettel-red focus:border-viettel-red transition-colors duration-200"/>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit"
+                                class="bg-viettel-red hover:bg-viettel-red-dark text-white font-semibold px-6 py-2 rounded-md transition-all duration-200 focus:ring-2 focus:ring-viettel-red focus:ring-opacity-50">
+                            Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="tab-name" name="activeTab" class="tab-pane hidden">
+            <form th:action="@{/contract/name}" method="get" class="space-y-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Tìm theo tên khách hàng</label>
+                <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                    <input type="text" name="name" th:value="${searchName}"
+                           class="form-control border border-gray-300 rounded-md px-3 py-2 w-full sm:w-1/2"
+                           placeholder="Nhập tên KH"/>
+                    <button type="submit"
+                            class="bg-viettel-red hover:bg-viettel-red-dark text-white font-bold px-6 py-2 rounded-md">
+                        Tìm kiếm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <h4 th:if="${inProgressContracts != null and !inProgressContracts.isEmpty()}" class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2 mt-8">Danh sách hợp đồng đang hợp tác</h4>
+        <div class="my-datatable overflow-x-auto" th:if="${inProgressContracts != null and !inProgressContracts.isEmpty()}">
+            <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-md" id="tableInProgress">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        STT
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tên KH
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Mã KH
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Lĩnh vực
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tgian tiếp xúc KH
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tên dự án
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Ngân sách dự án
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Nguồn tiếp cận
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Đánh giá cơ hội
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        SPDV (DK)
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        SL Seats / tháng (DK)
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Đơn giá (DK)
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Doanh thu / tháng (DK)
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Đơn vị chủ trì
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Đơn vị VCX
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tgian triển khai (DK)
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Phân loại HĐ
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tình trạng
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tiến độ
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Chi tiết
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr th:each="contract, iterStat : ${inProgressContracts}" class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${iterStat.index + 1}"></td>
+
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.client != null} ? ${contract.client.name} : 'Không rõ'"></td>
+
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.client != null} ? ${contract.client.id} : 'N/A'"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.client.field}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.client.approachTime}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.client.projectName}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.client.projectBudget}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.client.source}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.client.chance}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${contract.product}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.expectedSeatsPerMonth}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${#numbers.formatDecimal(contract.expectedValue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${#numbers.formatDecimal(contract.expectedRevenuePerMonth, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.unitInCharge}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.vcxImplementingUnit}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.expectedLaunch}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${contract.category}"></td>
+                    <!-- Status badge -->
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span th:classappend="
+                            ${contract.status == 'Đã ký'} ? 'bg-green-100 text-green-800' :
+                            (${contract.status == 'Đang ký'} ? 'bg-yellow-100 text-yellow-800' :
+                            (${contract.status == 'Chưa ký'} ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'))"
+                              class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                              th:text="${contract.status}">
+                        </span>
+                    </td>
+
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.detailedProgress}"></td>
+
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <a th:href="@{/contract/details/{id}(id=${contract.id})}" class="text-blue-600 hover:underline">Chi
+                            tiết</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h4 th:if="${doneDealContracts != null and !doneDealContracts.isEmpty()}" class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2 mt-8">Danh sách hợp đồng đã hợp tác</h4>
+        <div th:if="${doneDealContracts != null and !doneDealContracts.isEmpty()}" class="my-datatable overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-md" id="tableDoneDeal">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        STT
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        PAKD Số
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Nội dung PAKD
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tên SPDV
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tgian tiếp xúc KH
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Phòng ban chủ trì
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Phân loại HĐ
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Phân loại KH
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Số HĐ
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Ngày ký
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Bắt đầu
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Thời gian
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Kết thúc
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tên KH (Tên VT)
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        KH cuối sử dụng DV
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        AM Phụ trách
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Kênh bán
+                    </th>
+                    <!--                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">-->
+                    <!--                        Tỷ lệ VCX-->
+                    <!--                    </th>-->
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Giá trị HĐ chưa VAT
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        VAT
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tổng giá trị HĐ
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tiến độ HĐ
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tình trạng doanh thu
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Nền tảng
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Chi tiết
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr th:each="contract, iterStat : ${doneDealContracts}" class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${iterStat.index + 1}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.pakdCode}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.pakdContent}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.product}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.client.approachTime}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.unitInCharge}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.category}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.client.category}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.contractCode}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.signedDate}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.startDate}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.durationInMonths} + ' tháng' "></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.endDate}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <a th:href="@{/client/details/{id}(id=${contract.client.id})}"
+                           th:text="${contract.client.name + ' (' + contract.client.abbreviation + ')'}"
+                           class="text-blue-600 hover:underline">
+                        </a>
+                    </td>
+
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.lastClient}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.amLead}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.sellingChannel}"></td>
+                    <!--                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"-->
+                    <!--                        th:text="${contract.vcxRatio}"></td>-->
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.contractValueNoVat + ' VNĐ'}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.vat + ' VNĐ'}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.totalValue + ' VNĐ'}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.detailedProgress}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <span th:class="
+                             ${contract.revenueStatus == 'Thu đủ'} ? 'bg-green-100 text-green-800 px-2 inline-flex text-xs leading-5 font-semibold rounded-full' :
+                            (${contract.revenueStatus == 'Đang thu'} ? 'bg-yellow-100 text-yellow-800 px-2 inline-flex text-xs leading-5 font-semibold rounded-full' :
+                            (${contract.revenueStatus == 'Chưa thu'} ? 'bg-red-100 text-red-800 px-2 inline-flex text-xs leading-5 font-semibold rounded-full' :
+                            'bg-gray-100 text-gray-800 px-2 inline-flex text-xs leading-5 font-semibold rounded-full'))"
+                              th:text="${contract.revenueStatus}"></span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        th:text="${contract.servicePlatform}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <a th:href="@{/contract/details/{id}(id=${contract.id})}" class="text-blue-600 hover:underline">Chi
+                            tiết</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Excel Export -->
+        <div th:if="${(inProgressContracts != null and !inProgressContracts.isEmpty()) or (doneDealContracts != null and !doneDealContracts.isEmpty())}" class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-6">
+            <label for="excelFilename" class="block text-gray-700 text-sm font-bold">Xuất file Excel:</label>
+            <input class="block w-full sm:w-1/3 border border-gray-300 rounded-md px-3 py-2 focus:ring-viettel-red focus:border-viettel-red transition duration-200"
+                   type="text" id="excelFilename" placeholder="Nhập tên file"/>
+            <button class="bg-viettel-red hover:bg-viettel-red-dark text-white font-bold px-6 py-2 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-viettel-red"
+                    id="exportExcelButton1" type="submit">Xuất Excel
+            </button>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('[DEBUG] Tab script loaded and DOM fully parsed.');
+
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            console.log('[DEBUG] Found tab buttons:', tabButtons.length);
+            console.log('[DEBUG] Found tab panes:', tabPanes.length);
+
+            let defaultTabId = /*[[${activeTab} ?: 'tab-default']]*/ 'tab-default';
+            console.log('[DEBUG] Default tab ID is:', defaultTabId);
+
+            function activateTab(tabId) {
+                tabButtons.forEach(btn => {
+                    const isActive = btn.dataset.tab === tabId;
+                    btn.classList.toggle('active', isActive);
+                    btn.classList.toggle('border-viettel-red', isActive);
+                    btn.classList.toggle('text-viettel-red', isActive);
+                });
+
+                tabPanes.forEach(pane => {
+                    pane.classList.toggle('hidden', pane.id !== tabId);
+                });
+                console.log('[DEBUG] Activated tab:', tabId);
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const selectedTab = button.dataset.tab;
+                    console.log('[DEBUG] Tab clicked:', selectedTab);
+                    activateTab(selectedTab);
+                });
+            });
+
+            activateTab(defaultTabId);
+        });
+        /*]]>*/
+    </script>
+</section>
+</body>
+</html>

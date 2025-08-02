@@ -1,0 +1,289 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tìm kiếm Khách hàng</title>
+
+    <style>
+        /* Viettel Brand Colors (assuming these are globally defined, but included here for completeness) */
+        .text-viettel-red {
+            color: #ea0028;
+        }
+
+        .bg-viettel-red {
+            background-color: #ea0028;
+        }
+
+        .hover\:bg-viettel-red-dark:hover {
+            background-color: #D62621;
+        }
+
+        .focus\:ring-viettel-red {
+            --tw-ring-color: #ea0028;
+        }
+
+        .border-viettel-red {
+            border-color: #ea0028;
+        }
+
+        /* --- Tab specific styles --- */
+        .tab-button {
+            @apply px-5 py-2.5 text-sm font-medium border-b-2 border-transparent text-gray-700 hover:text-viettel-red hover:border-viettel-red transition-all duration-200 cursor-pointer;
+            white-space: nowrap; /* Prevent tab titles from wrapping */
+        }
+
+        .tab-button.active {
+            @apply text-viettel-red border-viettel-red bg-white -mb-px;
+            /* -mb-px to overlap the border below */
+            box-shadow: 0 -2px 0px 0px #ea0028 inset; /* Small red line on top for active */
+        }
+
+        .tab-pane {
+            @apply hidden pt-4;
+            /* Hidden by default, with padding-top */
+        }
+
+        .tab-pane.active {
+            @apply block;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="content">
+    <!-- Breadcrumb and Page Title Section -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4">
+        <h1 class="text-2xl font-bold flex items-center gap-2 text-gray-700 mb-4 sm:mb-0">
+            <i class="fa fa-th-list text-viettel-red"></i> Tìm kiếm khách hàng (Role Nhân viên)
+        </h1>
+    </div>
+
+    <!-- Main Content Area: Customer Search Card -->
+    <div class="bg-white shadow rounded-lg p-6 mt-8">
+        <h4 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Tuỳ chọn tìm kiếm</h4>
+
+        <!-- Tab Navigation -->
+        <div class="flex space-x-4 border-b border-gray-200 mb-6">
+            <button type="button"
+                    class="tab-button px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-viettel-red hover:border-viettel-red focus:outline-none active"
+                    data-tab="tab-default">
+                Mặc định
+            </button>
+            <button type="button"
+                    class="tab-button px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-viettel-red hover:border-viettel-red focus:outline-none"
+                    data-tab="tab-date">
+                Theo ngày tiếp cận
+            </button>
+            <button type="button"
+                    class="tab-button px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-viettel-red hover:border-viettel-red focus:outline-none"
+                    data-tab="tab-name">
+                Theo tên
+            </button>
+        </div>
+
+        <!-- Tab Panels -->
+
+        <!-- Tab: Default -->
+        <div id="tab-default" class="tab-pane active flex flex-col sm:flex-row justify-center items-stretch mt-4">
+            <!-- Search Option: Team -->
+            <div class="flex-1 flex flex-col items-center text-center border-b sm:border-b-0 sm:border-r border-gray-300 pb-4 sm:pb-0 sm:pr-6">
+                <p class="text-gray-700 mb-2 font-medium">Tìm kiếm khách hàng của team</p>
+                <a th:href="@{/employeeSearch/team}">
+                    <button class="bg-viettel-red hover:bg-viettel-red-dark text-white font-semibold px-5 py-2 rounded-md transition-all duration-200 focus:ring-2 focus:ring-viettel-red focus:ring-opacity-50">
+                        Tìm kiếm
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <!-- Tab: Date -->
+        <div id="tab-date" class="tab-pane hidden">
+            <form th:action="@{/employeeSearch/date}" method="get" class="space-y-4">
+                <input type="hidden" name="activeTab" th:value="'tab-date'"/>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">
+                    Tìm kiếm theo ngày tiếp cận
+                </label>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label for="startDate" class="text-sm text-gray-600">Từ ngày</label>
+                        <input id="startDate" name="startDate" type="date"
+                               th:value="${startDate}"
+                               class="form-control border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-viettel-red focus:border-viettel-red transition-colors duration-200"/>
+                    </div>
+                    <div>
+                        <label for="endDate" class="text-sm text-gray-600">Đến ngày</label>
+                        <input id="endDate" name="endDate" type="date"
+                               th:value="${endDate}"
+                               class="form-control border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-viettel-red focus:border-viettel-red transition-colors duration-200"/>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit"
+                                class="bg-viettel-red hover:bg-viettel-red-dark text-white font-semibold px-6 py-2 rounded-md transition-all duration-200 focus:ring-2 focus:ring-viettel-red focus:ring-opacity-50">
+                            Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tab: Name -->
+        <div id="tab-name" class="tab-pane hidden">
+            <form th:action="@{/employeeSearch/name}" method="post" class="space-y-4">
+                <input type="hidden" name="activeTab" th:value="'tab-name'"/>
+                <label for="nameInput" class="block text-sm font-semibold text-gray-700 mb-1">
+                    Tìm kiếm theo tên khách hàng
+                </label>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <input id="nameInput" name="name" type="text"
+                           class="form-control border border-gray-300 rounded-md px-3 py-2 w-full sm:w-1/2 focus:ring-viettel-red focus:border-viettel-red transition-colors duration-200"
+                           th:value="${name}" placeholder="Nhập tên khách hàng"/>
+                    <button type="submit"
+                            class="bg-viettel-red hover:bg-viettel-red-dark text-white font-semibold px-6 py-2 rounded-md transition-all duration-200 focus:ring-2 focus:ring-viettel-red focus:ring-opacity-50">
+                        Tìm kiếm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- Table Results -->
+        <h4 th:if="${clientList != null and !clientList.isEmpty()}" class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2 mt-8">Kết quả tìm kiếm</h4>
+        <div th:if="${clientList != null and !clientList.isEmpty()}" class="my-datatable overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-md" id="sampleTable">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        STT
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Mã khách hàng
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tên khách hàng
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Lĩnh vực
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Thời gian bắt đầu tiếp xúc
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Tên dự án
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Ngân sách dự án
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Nguồn tiếp cận
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Đánh giá cơ hội hợp tác
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Phân loại khách hàng
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr th:each="client, iterStat : ${clientList}" class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                        th:text="${iterStat.index + 1}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><a
+                            th:href="@{/client/details/{id}(id=${client.id})}" th:text="${client.id}"
+                            class="text-blue-600 hover:underline"></a></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${client.name}"></td>
+                    <!--                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-->
+                    <!--                        <span th:classappend="${client.status == 'Mới' ? 'bg-green-100 text-green-800' : (client.status == 'Đang xúc tiến' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')} + ' px-2 inline-flex text-xs leading-5 font-semibold rounded-full'"-->
+                    <!--                              th:text="${client.status}"></span>-->
+                    <!--                    </td>-->
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${client.field}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                        th:text="${client.approachTime}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${client.projectName}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                        th:text="${#numbers.formatDecimal(client.projectBudget, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${client.source}"></td>
+                    <!--                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-->
+                    <!--                        <a th:if="${client.contactPerson != null and client.contactPerson.website != null and client.contactPerson.website != ''}"-->
+                    <!--                           th:href="*{client.contactPerson.website}" th:text="*{client.contactPerson.website}"-->
+                    <!--                           target="_blank" class="text-blue-600 hover:underline"></a>-->
+                    <!--                        <span th:if="${client.contactPerson == null or client.contactPerson.website == null or client.contactPerson.website == ''}">N/A</span>-->
+                    <!--                    </td>-->
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <span th:classappend="${client.chance == 'Tiềm năng' ? 'bg-blue-100 text-blue-800' : (client.chance == 'Đạt mục tiêu' ? 'bg-yellow-100 text-yellow-800' : (client.chance == 'Chắc chắn' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'))} + ' px-2 inline-flex text-xs leading-5 font-semibold rounded-full'"
+                              th:text="${client.chance}"></span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${client.category}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Export Section -->
+        <div th:if="${clientList != null and !clientList.isEmpty()}" class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-6">
+            <label for="excelFilename" class="block text-gray-700 text-sm font-bold">Xuất file Excel:</label>
+            <input class="block w-full sm:w-1/3 border border-gray-300 rounded-md px-3 py-2 focus:ring-viettel-red focus:border-viettel-red transition-colors duration-200"
+                   type="text" id="excelFilename" placeholder="Nhập tên file"/>
+            <button class="bg-viettel-red hover:bg-viettel-red-dark text-white font-bold px-6 py-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-viettel-red focus:ring-opacity-50"
+                    id="exportExcelButton" type="submit">Xuất Excel
+            </button>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('[DEBUG] Tab script loaded and DOM fully parsed.');
+
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            console.log('[DEBUG] Found tab buttons:', tabButtons.length);
+            console.log('[DEBUG] Found tab panes:', tabPanes.length);
+
+            let defaultTabId = /*[[${activeTab} ?: 'tab-default']]*/ 'tab-default';
+            console.log('[DEBUG] Default tab ID is:', defaultTabId);
+
+            function activateTab(tabId) {
+                tabButtons.forEach(btn => {
+                    const isActive = btn.dataset.tab === tabId;
+                    btn.classList.toggle('active', isActive);
+                    btn.classList.toggle('border-viettel-red', isActive);
+                    btn.classList.toggle('text-viettel-red', isActive);
+                });
+
+                tabPanes.forEach(pane => {
+                    pane.classList.toggle('hidden', pane.id !== tabId);
+                });
+                console.log('[DEBUG] Activated tab:', tabId);
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const selectedTab = button.dataset.tab;
+                    console.log('[DEBUG] Tab clicked:', selectedTab);
+                    activateTab(selectedTab);
+                });
+            });
+
+            activateTab(defaultTabId);
+        });
+        /*]]>*/
+    </script>
+
+</section>
+
+<!-- XLSS.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</body>
+</html>

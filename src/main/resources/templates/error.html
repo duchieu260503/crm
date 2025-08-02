@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lỗi | Hệ thống Quản lý Khách hàng</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+        .text-viettel-red {
+            color: #ea0028;
+        }
+        .bg-viettel-red {
+            background-color: #ea0028;
+        }
+        .hover\:bg-viettel-red-dark:hover {
+            background-color: #d62621;
+        }
+        .focus\:ring-viettel-red {
+            --tw-ring-color: #ea0028;
+        }
+        .border-viettel-red {
+            border-color: #ea0028;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+
+<div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-sm mx-auto border-t-8 border-viettel-red text-center">
+    <div class="mb-6">
+        <!-- Error Icon -->
+        <div class="text-red-500 text-6xl mb-4">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2 leading-tight">Đường dẫn không khả dụng!</h2>
+        <p class="text-gray-600 text-lg">Chúng tôi xin lỗi vì sự bất tiện này. Vui lòng thử lại sau.</p>
+    </div>
+
+    <div>
+        <!-- Button to return to home page -->
+        <a href="/home"
+           class="w-full inline-flex justify-center items-center py-2.5 px-4 border border-transparent rounded-md shadow-md text-lg font-semibold text-white bg-viettel-red hover:bg-viettel-red-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-viettel-red transition-colors duration-200">
+            <i class="fas fa-home mr-3"></i> Quay lại trang chủ
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

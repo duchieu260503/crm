@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorator="layout">
+
+<body>
+<section layout:fragment="content">
+
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4">
+        <h1 class="text-2xl font-bold flex items-center gap-2 text-gray-700 mb-4 sm:mb-0">
+            <i class="fa fa-dashboard text-red-600"></i> Trang chủ
+        </h1>
+    </div>
+
+    <!-- Main content grid layout matching home-content.html -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+        <!-- User Information Section -->
+        <div class="bg-white shadow rounded-lg p-6 h-full">
+            <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Thông tin người dùng</h3>
+            <div class="space-y-2 text-gray-700" th:object="${user}">
+                <p><span class="font-medium">Tên:</span> <span th:text="*{name}"></span></p>
+                <p><span class="font-medium">Email:</span> <span th:text="*{email}"></span></p>
+                <p>
+                    <span class="font-medium">Quyền:</span>
+                    <span th:switch="*{role.name}">
+						<span th:case="'ROLE_ADMIN'">Admin</span>
+						<span th:case="'ROLE_EMPLOYEE'">Nhân viên</span>
+						<span th:case="*">Unknown</span>
+					</span>
+
+                </p>
+                <p>
+                    <span class="font-medium">Trạng thái hoạt động:</span>
+                    <span th:text="*{active} ? 'ACTIVE' : 'DEACTIVATED'"></span>
+                </p>
+                <p><span class="font-medium">Số điện thoại:</span> <span th:text="*{phone}"></span></p>
+                <hr/>
+                <h3 class="text-md font-semibold mt-4 text-gray-800">Địa chỉ văn phòng</h3>
+                <hr/>
+                <p><span class="font-medium">Quốc gia:</span> <span th:text="*{address.country}"></span></p>
+                <p><span class="font-medium">Khu vực:</span> <span th:text="*{address.region}"></span></p>
+                <p><span class="font-medium">Thành phố:</span> <span th:text="*{address.city}"></span></p>
+                <p><span class="font-medium">Tên đường:</span> <span th:text="*{address.street}"></span></p>
+            </div>
+        </div>
+        <!-- Middle column for Notifications and Contracts -->
+        <!--        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">-->
+        <!--            <div class="space-y-6">-->
+        <!-- Clients Section -->
+        <div class="bg-white shadow rounded-lg p-6 h-full">
+            <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Thông tin khách hàng</h3>
+            <div class="overflow-x-auto my-datatable">
+                <table class="min-w-full table-auto border border-gray-200 rounded-md text-sm text-left"
+                       id="sampleTable">
+                    <thead class="bg-gray-100 text-gray-700">
+                    <tr>
+                        <th class="px-4 py-2 border-b border-gray-200 whitespace-nowrap">Tên khách hàng</th>
+                        <th class="px-4 py-2 border-b border-gray-200 whitespace-nowrap">Lĩnh vực</th>
+                        <th class="px-4 py-2 border-b border-gray-200 whitespace-nowrap">Tên dự án</th>
+                        <th class="px-4 py-2 border-b border-gray-200 whitespace-nowrap">Trạng thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="hover:bg-gray-50" th:each="document: ${clientList}">
+                        <td class="px-4 py-2 border-b border-gray-200 whitespace-nowrap">
+                            <a th:href="@{/contract/details/{id}(id=${document.id})}"
+                               th:text="${document.name}" class="text-blue-600 hover:underline"></a>
+                        </td>
+                        <td class="px-4 py-2 border-b border-gray-200 whitespace-nowrap"
+                            th:text="${document.field}"></td>
+                        <td class="px-4 py-2 border-b border-gray-200 whitespace-nowrap"
+                            th:text="${document.projectName}"></td>
+                        <td class="px-4 py-2 border-b border-gray-200 whitespace-nowrap"
+                            th:text="${document.status}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6 h-full ">
+            <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Thông tin hợp đồng</h3>
+            <div class="overflow-auto my-datatable">
+                <table class="min-w-full table-auto border border-gray-200 rounded-md text-sm text-left"
+                       id="sampleTable1">
+                    <thead class="bg-gray-100 text-gray-700">
+                    <tr>
+                        <th class="px-4 py-2 border-b border-gray-200 whitespace-nowrap">ID</th>
+                        <th class="px-4 py-2 border-b border-gray-200 whitespace-nowrap">Trạng thái</th>
+                        <th class="px-4 py-2 border-b border-gray-200 whitespace-nowrap">Đơn vị chủ trì</th>
+                        <th class="px-4 py-2 border-b border-gray-200 whitespace-nowrap">Sản phẩm</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="hover:bg-gray-50" th:each="document: ${contractList}">
+                        <td class="px-4 py-2 border-b border-gray-200 whitespace-nowrap">
+                            <a th:href="@{/contract/details/{id}(id=${document.id})}"
+                               th:text="${document.id}" class="text-blue-600 hover:underline"></a>
+                        </td>
+                        <td class="px-4 py-2 border-b border-gray-200 whitespace-nowrap"
+                            th:text="${document.type}"></td>
+                        <td class="px-4 py-2 border-b border-gray-200 whitespace-nowrap"
+                            th:text="${document.unitInCharge}"></td>
+                        <td class="px-4 py-2 border-b border-gray-200 whitespace-nowrap"
+                            th:text="${document.product}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+<!--<script src="/js/layout.js"></script>-->
+
+</html>

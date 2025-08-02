@@ -1,0 +1,185 @@
+/* ========== FORM CONTROLS ========== */
+.my-datatable .form-control {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #FFF;
+    background-clip: padding-box;
+    border: 2px solid #ced4da;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-left: 0.5rem;
+}
+
+.my-datatable .form-control:focus {
+    color: #495057;
+    background-color: #FFF;
+    /*border-color: #009688;*/
+    border-color: rgb(234 0 51);
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.my-datatable .form-control-sm {
+    padding: 0.25rem 0.5rem;           /* Tailwind px-2 py-1 */
+    font-size: 0.75rem;                /* Tailwind text-xs */
+}
+
+/* ========== INFO TEXT ========== */
+.my-datatable .dataTables_info {
+    margin-top: 1rem;
+    font-size: 0.875rem;               /* Tailwind text-sm */
+    color: #6b7280;                    /* Tailwind gray-500 */
+    font-style: italic;
+}
+
+/* ========== PAGINATION ========== */
+.my-datatable .dataTables_paginate {
+    margin: 0;
+    white-space: nowrap;
+    text-align: center;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+}
+
+.my-datatable .paginate_button {
+    border: 1px solid #d1d5db;
+    padding: 0.25rem 0.75rem;
+    margin-left: 0.25rem;
+    border-radius: 0.375rem;
+    background-color: #f9fafb;         /* Tailwind gray-50 */
+    color: #374151;                    /* Tailwind gray-700 */
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.my-datatable .paginate_button:hover {
+    background-color: #e5e7eb;         /* Tailwind gray-200 */
+}
+
+.my-datatable .paginate_button.active {
+    background-color: #ef4444;         /* Tailwind red-500 (viettel-red) */
+    color: #ffffff;
+    font-weight: 600;
+    border-color: #ef4444;
+}
+
+.pagination {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: 0.25rem;
+    justify-content: center;
+}
+
+.dataTables_wrapper {
+    @apply p-0; /* Remove default DataTables wrapper padding if parent has padding */
+}
+
+/* Top controls: length and filter */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    @apply flex items-center mb-4; /* Ensure vertical spacing */
+}
+
+/* Group length elements */
+.dataTables_wrapper .dataTables_length {
+    @apply mr-auto; /* Pushes filter to the right when combined with filter */
+}
+
+/* Search input field */
+.dataTables_filter input {
+    @apply border border-gray-300 rounded-md px-3 py-1 focus:ring-viettel-red focus:border-viettel-red transition-colors duration-200;
+    width: auto !important; /* Override DataTables default width if necessary */
+    min-width: 150px;
+    box-shadow: 0 0 0 2px transparent; /* Default transparent shadow */
+}
+
+/* Length (entries per page) selector */
+.dataTables_length select {
+    @apply border border-gray-300 rounded-md px-3 py-1 focus:ring-viettel-red focus:border-viettel-red transition-colors duration-200;
+    box-shadow: 0 0 0 2px transparent; /* Default transparent shadow */
+}
+
+/* On focus for input/select: apply Viettel red ring and a subtle shadow */
+.dataTables_filter input:focus,
+.dataTables_length select:focus {
+    box-shadow: 0 0 0 2px #ea0028; /* Viettel Red shadow on focus */
+}
+
+/* Information text (e.g., "Showing X to Y of Z entries") */
+.dataTables_info {
+    @apply text-sm text-gray-600 mt-4; /* Add top margin for separation */
+}
+
+/* Pagination container */
+.dataTables_paginate {
+    @apply flex space-x-2 mt-4 justify-end; /* Align pagination to the right */
+}
+
+/* Pagination buttons (common styles for all buttons) */
+.dataTables_paginate .paginate_button {
+    @apply px-3 py-1 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-gray-700 transition-colors duration-200 cursor-pointer;
+    min-width: 32px; /* Ensure a minimum clickable area */
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Disabled pagination buttons (Previous/Next when not available) */
+.dataTables_paginate .paginate_button.disabled {
+    @apply opacity-50 cursor-not-allowed;
+    background-color: #fff !important; /* Ensure background stays white */
+    color: #9ca3af !important; /* Lighter text for disabled */
+    border-color: #d1d5db !important; /* Lighter border for disabled */
+}
+
+/* Active/Current pagination button */
+.dataTables_paginate .paginate_button.current,
+.dataTables_paginate .paginate_button.current:hover {
+    @apply border-viettel-red bg-viettel-red text-white font-semibold rounded-md;
+    cursor: default;
+}
+
+/* Hover state for enabled buttons */
+.dataTables_paginate .paginate_button:not(.current):not(.disabled):hover {
+    @apply bg-gray-100; /* Subtle hover effect */
+}
+
+/* Flex layout for top controls labels and inputs */
+.dataTables_wrapper .dataTables_filter label,
+.dataTables_wrapper .dataTables_length label {
+    @apply flex items-center;
+}
+
+.dataTables_wrapper .dataTables_filter label input {
+    margin-left: 8px; /* Space between "Search:" label and input */
+}
+
+/* Ensure the table itself maintains its full width within its container */
+.dataTables_wrapper table.dataTable {
+    width: 100% !important; /* Ensure DataTables table takes full width */
+    margin-top: 1rem !important; /* Add space between controls and table */
+    margin-bottom: 1rem !important; /* Add space between table and controls */
+}
+
+/* Style for the top row containing length and filter */
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_top {
+    @apply flex flex-col sm:flex-row justify-between items-center;
+}
+
+/* Clearfix for DataTables_wrapper */
+.dataTables_wrapper:after {
+    visibility: hidden;
+    display: block;
+    content: "";
+    clear: both;
+    height: 0;
+}
