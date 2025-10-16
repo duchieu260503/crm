@@ -17,7 +17,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @EnableAsync
 @EnableScheduling
 @SpringBootApplication
-public class CrmApplication implements AsyncConfigurer, SchedulingConfigurer{
+public class 	CrmApplication implements AsyncConfigurer, SchedulingConfigurer{
 
 	
 	public static void main(String[] args) {

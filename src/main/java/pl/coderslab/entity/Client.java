@@ -5,10 +5,11 @@ import java.time.LocalDate;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import com.sun.istack.internal.Nullable;
+//import com.sun.istack.internal.Nullable;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.*;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
