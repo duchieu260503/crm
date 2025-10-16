@@ -30,7 +30,7 @@ This CRM system is designed to streamline customer relationship management proce
 - **Value Management**: Track expected and actual contract values
 
 ### 🔐 **Role-Based Access Control**
-<!-- ![Role-Based Navigation](docs/images/role-navigation.png)
+<!-- ![Role-Based Navigation](docs/images/navigation.png)
 *Different interface views and permissions based on user roles* -->
 
 - **Multi-Level Security**: Implemented with Spring Security
@@ -126,14 +126,6 @@ This CRM system is designed to streamline customer relationship management proce
 - Quick access to assigned clients and contracts
 - Real-time data overview and statistics
 
-### **Navigation**
-![Role-Based Navigation](docs/images/role-navigation.png)
-*Intuitive sidebar with organized sections and role-based menu items*
-
-- Role-based navigation menu
-- Intuitive sidebar with organized sections
-- Quick access buttons for common tasks
-
 ## 🔒 Security Features
 
 ### **Authentication**
@@ -221,18 +213,6 @@ logging.level.org.springframework.security=DEBUG
 - ✅ System configuration and maintenance
 - ✅ Data export and import capabilities
 - ✅ All contract and client operations
-
-### **OWNER**
-- ✅ Business oversight and reporting
-- ✅ Contract approval and management
-- ✅ Team performance monitoring
-- ✅ Strategic data access
-
-### **MANAGER**
-- ✅ Team supervision and management
-- ✅ Contract review and approval
-- ✅ Employee performance tracking
-- ✅ Client relationship oversight
 
 ### **EMPLOYEE**
 ![Employee Dashboard](docs/images/employee-dashboard.png)
